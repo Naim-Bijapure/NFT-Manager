@@ -64,7 +64,7 @@ export default function Account({
   }
 
   const display = !minimized && (
-    <span>
+    <span className="">
       {address && (
         <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={20} />
       )}

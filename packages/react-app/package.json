@@ -19,6 +19,7 @@
     "@apollo/client": "^3.3.21",
     "@apollo/react-hooks": "^4.0.0",
     "@arbitrum/sdk": "^2.0.0",
+    "@craco/craco": "^6.4.5",
     "@eth-optimism/sdk": "^1.0.0",
     "@portis/web3": "^4.0.5",
     "@ramp-network/ramp-instant-sdk": "^2.2.0",
@@ -62,7 +63,7 @@
     "@apollo/client": "^3.3.21",
     "@testing-library/dom": "^6.12.2",
     "@types/react": "^16.9.19",
-    "autoprefixer": "^10.2.4",
+    "autoprefixer": "^9",
     "chalk": "^4.1.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -72,9 +73,11 @@
     "gulp-less": "^4.0.1",
     "gulp-postcss": "^9.0.0",
     "less-plugin-npm-import": "^2.1.0",
+    "postcss": "^7",
     "prettier": "^2.0.5",
     "s3-folder-upload": "^2.3.1",
-    "surge": "^0.21.5"
+    "surge": "^0.21.5",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   },
   "eslintConfig": {
     "extends": [
@@ -86,11 +89,11 @@
     }
   },
   "scripts": {
-    "build": "react-scripts build",
+    "build": "craco build",
     "eject": "react-scripts eject",
     "prestart": "node ./scripts/create_contracts.js",
-    "start": "react-scripts start",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "test": "craco test",
     "lint": "eslint ./src/**/*.{js,jsx} --ignore-path ./.eslintignore --max-warnings=0",
     "ipfs": "node ./scripts/ipfs.js",
     "surge": "cp build/index.html build/200.html && surge ./build",
