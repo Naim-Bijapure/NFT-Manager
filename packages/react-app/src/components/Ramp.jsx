@@ -55,7 +55,7 @@ export default function Ramp(props) {
         onClick={() => {
           setModalUp("up");
         }}
-        className="text-color text-base items-center justify-center navButton flex flex-row"
+        className="text-color space-x-2 text-base items-center justify-center navButton flex flex-row"
       >
         <HiCurrencyDollar style={{ color: "#52c41a" }} />{" "}
         {typeof props.price === "undefined" ? 0 : props.price.toFixed(2)}
