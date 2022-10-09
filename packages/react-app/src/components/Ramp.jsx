@@ -2,6 +2,7 @@ import { Button, Divider, Modal } from "antd";
 import React, { useState } from "react";
 import { DollarCircleOutlined } from "@ant-design/icons";
 import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
+import { HiCurrencyDollar } from "react-icons/hi";
 
 // added display of 0 if price={price} is not provided
 
@@ -37,9 +38,6 @@ export default function Ramp(props) {
         <p key={props.networks[n].chainId}>
           <Button
             style={{ color: props.networks[n].color }}
-            type={type}
-            size="large"
-            shape="round"
             onClick={() => {
               window.open(props.networks[n].faucet);
             }}
@@ -53,16 +51,15 @@ export default function Ramp(props) {
 
   return (
     <div>
-      <Button
-        size="large"
-        shape="round"
+      <button
         onClick={() => {
           setModalUp("up");
         }}
+        className="text-color text-base items-center justify-center navButton flex flex-row"
       >
-        <DollarCircleOutlined style={{ color: "#52c41a" }} />{" "}
+        <HiCurrencyDollar style={{ color: "#52c41a" }} />{" "}
         {typeof props.price === "undefined" ? 0 : props.price.toFixed(2)}
-      </Button>
+      </button>
       <Modal
         title="Buy ETH"
         visible={modalUp === "up"}
@@ -107,7 +104,7 @@ export default function Ramp(props) {
               new RampInstantSDK({
                 hostAppName: "scaffold-eth",
                 hostLogoUrl: "https://scaffoldeth.io/scaffold-eth.png",
-                swapAmount: "100000000000000000", // 0.1 ETH in wei  ?
+                swapAmount: "100000000000000000",
                 swapAsset: "ETH",
                 userAddress: props.address,
               })

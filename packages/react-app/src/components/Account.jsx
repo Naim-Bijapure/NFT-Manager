@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import React from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
+import { Link } from "react-router-dom";
 
 import Address from "./Address";
 import Balance from "./Balance";
@@ -85,12 +86,12 @@ export default function Account({
   );
 
   return (
-    <div style={{ display: "flex" }}>
+    <div className="justify-between items-center flex right-10 top-8 lg:right-30 lg:top-20">
       {display}
       {web3Modal && (
-        <Button style={{ marginLeft: 8 }} shape="round" onClick={accountButtonInfo.action}>
+        <button onClick={accountButtonInfo.action} className="uppercase btn">
           {accountButtonInfo.name}
-        </Button>
+        </button>
       )}
     </div>
   );

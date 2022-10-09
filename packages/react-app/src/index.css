@@ -2,14 +2,98 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Halvatica", cursive;
+}
+
+
 .App {
   text-align: center;
 }
 
 body {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Milonga-Regular;
+}
+
+button {
+  text-decoration: none;
+  color: aliceblue;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: Milonga-Regular, source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
+.btn {
+  -webkit-border-radius: 6;
+  -moz-border-radius: 6;
+  border-radius: 6px;
+  text-shadow: 5px 5px 5px #000000;
+  color:#e6d6ca;
+  font-size: 23px;
+  background: #521212;
+  padding: 7px 15px 7px 14px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #f0270c;
+  text-decoration: none;
+}
+.createBtn {
+  -webkit-border-radius: 6;
+  -moz-border-radius: 6;
+  border-radius: 6px;
+  text-shadow: 5px 5px 5px #000000;
+  color:#e6d6ca;
+  font-size: 23px;
+  background: #521212;
+  padding: 7px 15px 7px 14px;
+  text-decoration: none;
+}
+
+.createBtn:hover {
+  background: #f0270c;
+  text-decoration: none;
+}
+
+.navButton{
+  color: #e6d6ca;
+  text-decoration: none;
+  font-family: Milonga-Regular;
+}
+
+.headerClass{
+  padding: 40px;
+}
+
+.heroImage {
+  width: 400px;
+  height: 400px;
+  padding: auto;
+  animation: 3s ease-in 1s reverse both running slidein;
+ 
+}
+
+/* .imgContain {
+  box-shadow: 0 0 8000px #75042a;
+  z-index: 5;
+} */
+
+@media (max-width: 1024px) {
+  .headerClass{
+    padding: 10px;
+    flex-direction: row-reverse;
+  }
+}
+@font-face {
+  font-family: 'FantaisieArtistique';
+  src: local('FantaisieArtistique'), url(./fonts/FantaisieArtistique.ttf) format('truetype');}
+@font-face {
+  font-family: 'Milonga-Regular';
+  src: local('Milonga-Regular'), url(./fonts/Milonga-Regular.ttf) format('truetype');}

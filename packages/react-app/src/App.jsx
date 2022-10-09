@@ -29,7 +29,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { Home, Marketplace, Create } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -66,7 +66,7 @@ const web3Modal = Web3ModalSetup();
 // 🛰 providers
 const providers = [
   "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
-  `https://eth-mainnet.alchemyapi.io/v2/${ ALCHEMY_KEY }`,
+  `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
   "https://rpc.scaffoldeth.io:48544",
 ];
 
@@ -91,7 +91,7 @@ function App(props) {
   ]);
   const mainnetProvider = useStaticJsonRPC(providers);
 
-  if (DEBUG) console.log(`Using ${ selectedNetwork } network`);
+  if (DEBUG) console.log(`Using ${selectedNetwork} network`);
 
   // 🛰 providers
   if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -158,7 +158,7 @@ function App(props) {
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${ mainnetProvider._lastBlockNumber }`);
+    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
   });
 
   // Then read your DAI balance like:
@@ -219,7 +219,7 @@ function App(props) {
     setInjectedProvider(new ethers.providers.Web3Provider(provider));
 
     provider.on("chainChanged", chainId => {
-      console.log(`chain changed to ${ chainId }! updating providers`);
+      console.log(`chain changed to ${chainId}! updating providers`);
       setInjectedProvider(new ethers.providers.Web3Provider(provider));
     });
 
@@ -246,8 +246,7 @@ function App(props) {
 
   return (
     <div className="App">
-      {/* ✏️ Edit the header and change the title to your project name */}
-      <Header>
+      <Header className="relative w-screen top-10">
         {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
         <div style={{ position: "relative", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", flex: 1 }}>
@@ -278,34 +277,14 @@ function App(props) {
       {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
         <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
       )}
-      <NetworkDisplay
+      {/* <NetworkDisplay
         NETWORKCHECK={NETWORKCHECK}
         localChainId={localChainId}
         selectedChainId={selectedChainId}
         targetNetwork={targetNetwork}
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
-      />
-      <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/">App Home</Link>
-        </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
-      </Menu>
+      /> */}
 
       <Switch>
         <Route exact path="/">
@@ -329,16 +308,16 @@ function App(props) {
             contractConfig={contractConfig}
           />
         </Route>
-        <Route path="/hints">
-          <Hints
+        <Route path="/Martketplae">
+          <Marketplace
             address={address}
             yourLocalBalance={yourLocalBalance}
             mainnetProvider={mainnetProvider}
             price={price}
           />
         </Route>
-        <Route path="/exampleui">
-          <ExampleUI
+        <Route path="/Create">
+          <Create
             address={address}
             userSigner={userSigner}
             mainnetProvider={mainnetProvider}
@@ -363,14 +342,14 @@ function App(props) {
             chainId={1}
           />
         </Route>
-        <Route path="/subgraph">
+        {/* <Route path="/subgraph">
           <Subgraph
             subgraphUri={props.subgraphUri}
             tx={tx}
             writeContracts={writeContracts}
             mainnetProvider={mainnetProvider}
           />
-        </Route>
+        </Route> */}
       </Switch>
 
       <ThemeSwitch />
@@ -380,24 +359,6 @@ function App(props) {
         <Row align="middle" gutter={[4, 4]}>
           <Col span={8}>
             <Ramp price={price} address={address} networks={NETWORKS} />
-          </Col>
-
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-            <GasGauge gasPrice={gasPrice} />
-          </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
-            <Button
-              onClick={() => {
-                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
-              }}
-              size="large"
-              shape="round"
-            >
-              <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                💬
-              </span>
-              Support
-            </Button>
           </Col>
         </Row>
 
