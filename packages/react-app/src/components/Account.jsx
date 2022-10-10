@@ -86,7 +86,7 @@ export default function Account({
   );
 
   return (
-    <div className="justify-between items-center flex right-10 top-8 lg:right-30 lg:top-20">
+    <div className="justify-between items-center flex">
       {display}
       {web3Modal && (
         <button onClick={accountButtonInfo.action} className="uppercase btn">

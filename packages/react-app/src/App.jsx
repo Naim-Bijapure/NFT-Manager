@@ -246,11 +246,11 @@ function App(props) {
 
   return (
     <div className="App">
-      <Header className="relative w-screen top-10">
+      <Header>
         {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
         <div style={{ position: "relative", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", flex: 1 }}>
-            {USE_NETWORK_SELECTOR && (
+            {/* {USE_NETWORK_SELECTOR && (
               <div style={{ marginRight: 20 }}>
                 <NetworkSwitch
                   networkOptions={networkOptions}
@@ -258,7 +258,7 @@ function App(props) {
                   setSelectedNetwork={setSelectedNetwork}
                 />
               </div>
-            )}
+            )} */}
             <Account
               useBurner={USE_BURNER_WALLET}
               address={address}
@@ -308,7 +308,7 @@ function App(props) {
             contractConfig={contractConfig}
           />
         </Route>
-        <Route path="/Martketplae">
+        <Route path="/marketplace">
           <Marketplace
             address={address}
             yourLocalBalance={yourLocalBalance}

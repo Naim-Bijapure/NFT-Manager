@@ -17,7 +17,7 @@ function Home({ yourLocalBalance, readContracts }) {
 
   return (
     <div>
-      <div className="relative w-screen items-stretch lg:space-x-0 flex flex-col lg:flex-row">
+      <div className="relative w-screen ease-in-out items-stretch lg:space-x-0 flex flex-col lg:flex-row">
         <div
           style={{ fontFamily: "FantaisieArtistique" }}
           className="w-screen tracking-widest content-center lg:w-1/2 py-16 h-auto text-7xl text-left px-4 lg:pl-28 flex-1 flex flex-wrap"
