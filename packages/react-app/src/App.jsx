@@ -1,4 +1,6 @@
 import { Button, Col, Menu, Row } from "antd";
+import Admin from "./views/Admin";
+
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -66,7 +68,7 @@ const web3Modal = Web3ModalSetup();
 // 🛰 providers
 const providers = [
   "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
-  `https://eth-mainnet.alchemyapi.io/v2/${ ALCHEMY_KEY }`,
+  `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
   "https://rpc.scaffoldeth.io:48544",
 ];
 
@@ -91,7 +93,7 @@ function App(props) {
   ]);
   const mainnetProvider = useStaticJsonRPC(providers);
 
-  if (DEBUG) console.log(`Using ${ selectedNetwork } network`);
+  if (DEBUG) console.log(`Using ${selectedNetwork} network`);
 
   // 🛰 providers
   if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -158,7 +160,7 @@ function App(props) {
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${ mainnetProvider._lastBlockNumber }`);
+    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
   });
 
   // Then read your DAI balance like:
@@ -219,7 +221,7 @@ function App(props) {
     setInjectedProvider(new ethers.providers.Web3Provider(provider));
 
     provider.on("chainChanged", chainId => {
-      console.log(`chain changed to ${ chainId }! updating providers`);
+      console.log(`chain changed to ${chainId}! updating providers`);
       setInjectedProvider(new ethers.providers.Web3Provider(provider));
     });
 
@@ -288,7 +290,7 @@ function App(props) {
       />
       <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
-          <Link to="/">App Home</Link>
+          <Link to="/">Admin</Link>
         </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
@@ -309,16 +311,16 @@ function App(props) {
 
       <Switch>
         <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          {/* <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} /> */}
+          <Admin
+            yourLocalBalance={yourLocalBalance}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
+            localProvider={localProvider}
+            userSigner={userSigner}
+          />
         </Route>
         <Route exact path="/debug">
-          {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
           <Contract
             name="YourContract"
             price={price}

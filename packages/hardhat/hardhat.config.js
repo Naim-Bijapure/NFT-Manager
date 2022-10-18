@@ -7,6 +7,7 @@ require("@nomicfoundation/hardhat-chai-matchers");
 require("@tenderly/hardhat-tenderly");
 require("@nomicfoundation/hardhat-toolbox");
 require("hardhat-deploy");
+require("hardhat-watcher");
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
@@ -47,7 +48,7 @@ module.exports = {
   gasReporter: {
     currency: "USD",
     coinmarketcap: process.env.COINMARKETCAP || null,
-    enabled: true,
+    enabled: false,
   },
 
   // if you want to deploy to a testnet, mainnet, or xdai, you will need to configure:
@@ -326,6 +327,18 @@ module.exports = {
     only: [],
     spacing: 2,
     pretty: false,
+  },
+  watcher: {
+    compilation: {
+      tasks: ["compile"],
+    },
+    test: {
+      tasks: [{ command: "test", params: { testFiles: ["{path}"] } }],
+      files: ["./test/**/*"],
+      verbose: true,
+      clearOnStart: true,
+      start: "echo Running my test task now..",
+    },
   },
 };
 
