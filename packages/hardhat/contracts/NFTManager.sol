@@ -31,6 +31,7 @@ contract NFTManager is ReentrancyGuard {
         uint256 price;
         bool sold;
         bool canceled;
+        bool listed;
     }
 
     event MarketItemCreated(
@@ -80,7 +81,8 @@ contract NFTManager is ReentrancyGuard {
             payable(address(0)),
             price,
             false,
-            false
+            false,
+            true
         );
 
         IERC721(nftContractAddress).transferFrom(
@@ -118,8 +120,9 @@ contract NFTManager is ReentrancyGuard {
         uint256 tokenId = marketItemIdToMarketItem[marketItemId].tokenId;
         // require(tokenId > 0, "Market item has to exist");
 
+
         require(
-            marketItemIdToMarketItem[marketItemId].seller != msg.sender,
+            marketItemIdToMarketItem[marketItemId].seller == msg.sender,
             "You are not the seller"
         );
 
@@ -131,6 +134,7 @@ contract NFTManager is ReentrancyGuard {
 
         marketItemIdToMarketItem[marketItemId].owner = payable(msg.sender);
         marketItemIdToMarketItem[marketItemId].canceled = true;
+        marketItemIdToMarketItem[marketItemId].listed = false;
 
         _tokensCanceled.increment();
     }
@@ -181,6 +185,7 @@ contract NFTManager is ReentrancyGuard {
 
         marketItemIdToMarketItem[marketItemId].owner = payable(msg.sender);
         marketItemIdToMarketItem[marketItemId].sold = true;
+        marketItemIdToMarketItem[marketItemId].listed = false;
 
         marketItemIdToMarketItem[marketItemId].seller.transfer(price);
         IERC721(nftContractAddress).transferFrom(

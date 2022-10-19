@@ -1,6 +1,7 @@
 import { Button, Col, Menu, Row } from "antd";
 import AdminDebug from "./views/AdminDebug";
 import Admin from "./views/Admin";
+import MarketPlace from "./views/MarketPlace";
 
 import "antd/dist/antd.css";
 import {
@@ -304,6 +305,10 @@ function App(props) {
           <Link to="/">Admin</Link>
         </Menu.Item>
 
+        <Menu.Item key="/marketPlace">
+          <Link to="/marketPlace">Marketplace</Link>
+        </Menu.Item>
+
         <Menu.Item key="/adminDebug">
           <Link to="/adminDebug">AdminDebug</Link>
         </Menu.Item>
@@ -327,7 +332,17 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           <Admin
-            yourLocalBalance={yourLocalBalance}
+            address={address}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
+            localProvider={localProvider}
+            userSigner={userSigner}
+          />
+        </Route>
+
+        <Route exact path="/marketPlace">
+          <MarketPlace
+            address={address}
             writeContracts={writeContracts}
             readContracts={readContracts}
             localProvider={localProvider}
