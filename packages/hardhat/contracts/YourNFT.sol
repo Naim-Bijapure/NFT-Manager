@@ -78,17 +78,22 @@ contract YourNFT is ERC721Royalty, Ownable {
         return string(abi.encodePacked(base, tokenId.toString()));
     }
 
-    function mint(string memory token_uri) public returns (uint256) {
+    function mint(string memory token_uri, uint96 feeNumerator)
+        public
+        returns (uint256)
+    {
         uint256 newItemId = _tokenIds.current();
         _exists(newItemId);
         _mint(msg.sender, newItemId);
         _creators[newItemId] = msg.sender;
         _setTokenURI(newItemId, token_uri);
+        setTokenRoyalty(newItemId, msg.sender, feeNumerator);
 
         _tokenIds.increment();
 
         // Give the NFT manager approval to transact NFTs between users
         setApprovalForAll(marketplaceAddress, true);
+
         emit TokenMinted(newItemId, token_uri, marketplaceAddress);
 
         return newItemId;
@@ -119,7 +124,7 @@ contract YourNFT is ERC721Royalty, Ownable {
         uint256 totalTokensCreated = 0;
 
         for (uint256 i = 0; i < totalTokens; i++) {
-            uint256 tokenId = i + 1;
+            uint256 tokenId = i;
             if (_creators[tokenId] != msg.sender) continue;
             totalTokensCreated += 1;
         }

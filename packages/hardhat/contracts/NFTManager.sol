@@ -59,8 +59,7 @@ contract NFTManager is ReentrancyGuard {
     function createMarketItem(
         address nftContractAddress,
         uint256 tokenId,
-        uint256 price,
-        uint96 feeNumerator
+        uint256 price
     ) public payable nonReentrant returns (uint256) {
         require(price > 0, "Price must be at least 1 wei");
         require(
@@ -71,15 +70,6 @@ contract NFTManager is ReentrancyGuard {
         uint256 marketItemId = _marketItemIds.current();
 
         address creator = YourNFT(nftContractAddress).getUserTokenById(tokenId);
-
-        // set token royalty
-        if (creator == msg.sender) {
-            YourNFT(nftContractAddress).setTokenRoyalty(
-                tokenId,
-                creator,
-                feeNumerator
-            );
-        }
 
         marketItemIdToMarketItem[marketItemId] = MarketItem(
             marketItemId,

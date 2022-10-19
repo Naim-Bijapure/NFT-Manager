@@ -1,4 +1,5 @@
 import { Button, Col, Menu, Row } from "antd";
+import AdminDebug from "./views/AdminDebug";
 import Admin from "./views/Admin";
 
 import "antd/dist/antd.css";
@@ -245,6 +246,16 @@ function App(props) {
   }, [loadWeb3Modal]);
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="App">
@@ -292,6 +303,10 @@ function App(props) {
         <Menu.Item key="/">
           <Link to="/">Admin</Link>
         </Menu.Item>
+
+        <Menu.Item key="/adminDebug">
+          <Link to="/adminDebug">AdminDebug</Link>
+        </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
         </Menu.Item>
@@ -311,8 +326,17 @@ function App(props) {
 
       <Switch>
         <Route exact path="/">
-          {/* <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} /> */}
           <Admin
+            yourLocalBalance={yourLocalBalance}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
+            localProvider={localProvider}
+            userSigner={userSigner}
+          />
+        </Route>
+
+        <Route exact path="/adminDebug">
+          <AdminDebug
             yourLocalBalance={yourLocalBalance}
             writeContracts={writeContracts}
             readContracts={readContracts}
@@ -322,7 +346,7 @@ function App(props) {
         </Route>
         <Route exact path="/debug">
           <Contract
-            name="YourContract"
+            name="NFTManager"
             price={price}
             signer={userSigner}
             provider={localProvider}
