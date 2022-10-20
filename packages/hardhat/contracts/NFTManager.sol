@@ -307,7 +307,6 @@ contract NFTManager is ReentrancyGuard {
             if (addressPropertyValue != msg.sender) continue;
             items[currentIndex] = item;
             currentIndex += 1;
-
         }
 
         return items;

@@ -132,6 +132,11 @@ function NftCard({ address, tokenId, yourNFT, NFTManager }) {
         <p className="text-xl">
           {tokenMarketData && ethers.utils.formatEther(tokenMarketData["price"].toString())} Eth
         </p>
+
+        <p className="text-sm text-gray-400">
+          <span className="">Royalty:</span>
+          {nftInfo && nftInfo["royalty"]} Eth
+        </p>
         {tokenMarketData && (
           <p>
             {ownerOfToken !== address && tokenMarketData["seller"] !== address ? (
