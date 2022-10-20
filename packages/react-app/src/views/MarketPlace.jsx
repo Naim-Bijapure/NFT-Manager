@@ -10,12 +10,22 @@ import EtherInput from "../components/EtherInput";
 
 function NftCard({ address, tokenId, yourNFT, NFTManager }) {
   const [tokenMarketData, setTokenMarketData] = useState();
+  const [nftInfo, setNftInfo] = useState();
+
   const onLoadTokenMarketDetails = async () => {
     const marketItemData = await NFTManager.getLatestMarketItemByTokenId(tokenId);
     //     if (marketItemData[1] && marketItemData[0]["canceled"] === false) {
     if (marketItemData[1]) {
       setTokenMarketData(marketItemData[0]);
     }
+
+    const tokenURI = await yourNFT.tokenURI(tokenId);
+    console.log("n-tokenURI: ", tokenURI);
+
+    let nftData = await fetch(tokenURI);
+    nftData = await nftData.json();
+    console.log("n-nftData: ", nftData);
+    setNftInfo(nftData);
   };
 
   useEffect(() => {
@@ -41,11 +51,16 @@ function NftCard({ address, tokenId, yourNFT, NFTManager }) {
 
   return (
     <div>
-      <Card size="small" title="NFT name" style={{ width: 300 }}>
-        <Image preview={false} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
-        <p>this is nft description</p>
+      <Card size="small" title={nftInfo?.name} style={{ width: 300 }}>
+        <Image preview={false} src={nftInfo?.image} />
+        <p>{nftInfo?.description}</p>
         <p className="text-xl">
           {tokenMarketData && ethers.utils.formatEther(tokenMarketData["price"].toString())} Eth
+        </p>
+
+        <p className="text-sm text-gray-400">
+          <span className="">Royalty:</span>
+          {nftInfo && nftInfo["royalty"]} Eth
         </p>
         <Button type="primary" onClick={onBuyNFT}>
           Buy NFT
