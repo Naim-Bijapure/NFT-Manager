@@ -44,8 +44,8 @@ export default function Dashboard({ writeContracts, mainnetProvider, address, bl
     <div style={{ maxWidth: "90%", padding: 20, overflow: "hidden", display: "flex" }}>
       <div className="space-y-3 w-screen items-center flex flex-col lg:flex-row lg:flex-wrap lg:justify-evenly gap-2 bg-opacity-5">
         {userTokens &&
-          userTokens.map(tokenId => {
-            <div key={tokenId} class="">
+          userTokens.map((tokenId, index) => (
+            <div key={index}>
               <NftCard
                 address={address}
                 tokenId={tokenId}
@@ -54,8 +54,8 @@ export default function Dashboard({ writeContracts, mainnetProvider, address, bl
                 mainnetProvider={mainnetProvider}
                 blockExplorer={blockExplorer}
               />
-            </div>;
-          })}
+            </div>
+          ))}
       </div>
     </div>
   );
