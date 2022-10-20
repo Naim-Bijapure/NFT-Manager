@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { AiOutlineClose, AiOutlineHome } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineDashboard, AiOutlineHome } from "react-icons/ai";
 import { FaBars } from "react-icons/fa";
 import { BsFillCartFill } from "react-icons/bs";
 import { MdOutlineDraw } from "react-icons/md";
@@ -9,6 +9,7 @@ export const routes = [
   { tabName: "Home", pageName: "/", icon: <AiOutlineHome /> },
   { tabName: "Marketplace", pageName: "/marketplace", icon: <BsFillCartFill /> },
   { tabName: "Create", pageName: "/create", icon: <MdOutlineDraw /> },
+  { tabName: "Dashboard", pageName: "/dashboard", icon: <AiOutlineDashboard /> },
 ];
 
 // displays a page header
@@ -24,15 +25,18 @@ export default function Header({ ...props }) {
       {/* Desktop view */}
       <nav className="hidden left-40 lg:flex lg:flex-row space-x-8 items-start text-center overflow-hidden">
         <div className="">
-          <div className="pt-5 text-xl space-x-9">
+          <div className="pt-5 text-md space-x-9">
             <Link to={"/"}>
-              <button className="text-color navButton font-bold">Home</button>
+              <button className="navButton font-bold">Home</button>
             </Link>
             <Link to={"/marketplace"}>
-              <button className="text-md text-color navButton font-bold">Marketplace</button>
+              <button className="text-md navButton font-bold">Marketplace</button>
             </Link>
             <Link to={"/create"}>
-              <button className="text-md text-color navButton font-bold">Create</button>
+              <button className="text-md navButton font-bold">Create</button>
+            </Link>
+            <Link to={"/dashboard"}>
+              <button className="text-md navButton font-bold">Dashboard</button>
             </Link>
           </div>
         </div>

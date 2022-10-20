@@ -24,7 +24,9 @@ function Home({ yourLocalBalance, readContracts }) {
         >
           Collect NFTs
           <br /> With Us.
-          <span className=" text-base flex flex-wrap tracking-widest">Royalties for Artists, Builders, Creators.</span>
+          <span className=" text-base flex flex-wrap tracking-widest">
+            Royalties for Artists, Builders and Creators.
+          </span>
           <div style={{ flex: "-moz-available" }} className="flex items-start">
             <Link to={"/create"}>
               <button className="text-color text-base createBtn uppercase">Create</button>

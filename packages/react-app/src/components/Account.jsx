@@ -65,11 +65,11 @@ export default function Account({
   }
 
   const display = !minimized && (
-    <span className="">
+    <span className="flex flex-row items-center justify-between">
       {address && (
-        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={20} />
+        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={17} />
       )}
-      <Balance address={address} provider={localProvider} price={price} size={20} />
+      <Balance address={address} provider={localProvider} price={price} size={16} />
       {!isContract && (
         <Wallet
           address={address}
@@ -86,7 +86,7 @@ export default function Account({
   );
 
   return (
-    <div className="justify-between items-center flex">
+    <div className="justify-between space-x-3 items-center flex">
       {display}
       {web3Modal && (
         <button onClick={accountButtonInfo.action} className="uppercase btn">

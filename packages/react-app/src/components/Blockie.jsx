@@ -8,5 +8,11 @@ export default function Blockie(props) {
     return <span />;
   }
   // eslint-disable-next-line react/jsx-props-no-spreading
-  return <Blockies seed={props.address.toLowerCase()} {...props} />;
+  return (
+    <>
+      <span style={{ overflow: "hidden", borderRadius: "50%" }}>
+        <Blockies seed={props.address.toLowerCase()} {...props} />
+      </span>
+    </>
+  );
 }

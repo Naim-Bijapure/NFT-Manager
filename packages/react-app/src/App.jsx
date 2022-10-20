@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row } from "antd";
+import { Button, Card, Col, List, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -9,30 +9,46 @@ import {
   useUserProviderAndSigner,
 } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
+import { useEventListener } from "eth-hooks/events/useEventListener";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
-import {
-  Account,
-  Contract,
-  Faucet,
-  GasGauge,
-  Header,
-  Ramp,
-  ThemeSwitch,
-  NetworkDisplay,
-  FaucetHint,
-  NetworkSwitch,
-} from "./components";
+import { Account, Contract, Header, Ramp, ThemeSwitch, FaucetHint, Address, AddressInput, Faucet } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, Marketplace, Create } from "./views";
+import { Home, Marketplace, Create, Dashboard } from "./views";
 import { useStaticJsonRPC } from "./hooks";
+import { json } from "./components/GetFiles";
+import ReactJson from "react-json-view";
+const ipfsAPI = require("ipfs-http-client");
+
+const projectId = "2DDHiA47zFkJXtnxzl2jFkyuaoq";
+const projectSecret = "96a91eeafc0a390ab66e6a87f61152aa";
+const projectIdAndSecret = `${projectId}:${projectSecret}`;
+
+const { BufferList } = require("bl");
+
+/*
+const ipfs = ipfsAPI({
+  host: "ipfs.nifty.ink",
+  port: "3001",
+  protocol: "https",
+});
+*/
+
+const ipfs = ipfsAPI({
+  host: "ipfs.infura.io",
+  port: "5001",
+  protocol: "https",
+  headers: { authorization: `Basic ${Buffer.from(projectIdAndSecret).toString("base64")}` },
+});
 
 const { ethers } = require("ethers");
+
+/*
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -167,13 +183,40 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  // const purpose = useContractReader(readContracts, "YourContract", "purpose");
 
+  // helper function to "Get" from IPFS
+  // you usually go content.toString() after this...
+  const getFromIPFS = async hashToGet => {
+    for await (const file of ipfs.get(hashToGet)) {
+      console.log(file.path);
+      if (!file.content) continue;
+      const content = new BufferList();
+      for await (const chunk of file.content) {
+        content.append(chunk);
+      }
+      console.log(content);
+      return content;
+    }
+  };
+
+  // keep track of a variable from the contract in the local React state:
+  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  console.log("🤗 balance:", balance);
+
+  // 📟 Listen for broadcast events
+  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  console.log("📟 Transfer events:", transferEvents);
+
+  //
+  // 🧠 This effect will update yourCollectibles by polling when your balance changes
+  //
+  const yourBalance = balance && balance.toNumber && balance.toNumber();
+  const [yourCollectibles, setYourCollectibles] = useState();
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
-
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
@@ -244,6 +287,14 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
+  const [yourJSON, setYourJSON] = useState({});
+  const [sending, setSending] = useState();
+  const [ipfsHash, setIpfsHash] = useState();
+  const [ipfsDownHash, setIpfsDownHash] = useState();
+  const [downloading, setDownloading] = useState();
+  const [ipfsContent, setIpfsContent] = useState();
+  const [transferToAddresses, setTransferToAddresses] = useState({});
+
   return (
     <div className="App">
       <Header>
@@ -310,10 +361,11 @@ function App(props) {
         </Route>
         <Route path="/marketplace">
           <Marketplace
-            address={address}
-            yourLocalBalance={yourLocalBalance}
+            writeContracts={writeContracts}
             mainnetProvider={mainnetProvider}
-            price={price}
+            address={address}
+            blockExplorer={blockExplorer}
+            tx={tx}
           />
         </Route>
         <Route path="/Create">
@@ -327,9 +379,108 @@ function App(props) {
             tx={tx}
             writeContracts={writeContracts}
             readContracts={readContracts}
-            purpose={purpose}
           />
         </Route>
+        <Route path="/dashboard">
+          <Dashboard
+            writeContracts={writeContracts}
+            mainnetProvider={mainnetProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            tx={tx}
+          />
+        </Route>
+        {/* <Route path="/ipfsup">
+          <div style={{ paddingTop: 32, width: 740, margin: "auto", textAlign: "left" }}>
+            <ReactJson
+              style={{ padding: 8 }}
+              src={yourJSON}
+              theme="pop"
+              enableClipboard={false}
+              onEdit={(edit, a) => {
+                setYourJSON(edit.updated_src);
+              }}
+              onAdd={(add, a) => {
+                setYourJSON(add.updated_src);
+              }}
+              onDelete={(del, a) => {
+                setYourJSON(del.updated_src);
+              }}
+            />
+          </div>
+
+          <Button
+            style={{ margin: 8 }}
+            loading={sending}
+            size="large"
+            shape="round"
+            type="primary"
+            onClick={async () => {
+              console.log("UPLOADING...", yourJSON);
+              setSending(true);
+              setIpfsHash();
+              const result = await ipfs.add(JSON.stringify(yourJSON)); // addToIPFS(JSON.stringify(yourJSON))
+              if (result && result.path) {
+                setIpfsHash(result.path);
+              }
+              setSending(false);
+              console.log("RESULT:", result);
+            }}
+          >
+            Upload to IPFS
+          </Button>
+
+          <div style={{ padding: 16, paddingBottom: 150 }}>{ipfsHash}</div>
+        </Route>
+        <Route path="/ipfsdown">
+          <div style={{ paddingTop: 32, width: 740, margin: "auto" }}>
+            <input
+              value={ipfsDownHash}
+              placeHolder="IPFS hash (like QmadqNw8zkdrrwdtPFK1pLi8PPxmkQ4pDJXY8ozHtz6tZq)"
+              onChange={e => {
+                setIpfsDownHash(e.target.value);
+              }}
+            />
+          </div>
+          <Button
+            style={{ margin: 8 }}
+            loading={sending}
+            size="large"
+            shape="round"
+            type="primary"
+            onClick={async () => {
+              console.log("DOWNLOADING...", ipfsDownHash);
+              setDownloading(true);
+              setIpfsContent();
+              const result = await getFromIPFS(ipfsDownHash); // addToIPFS(JSON.stringify(yourJSON))
+              if (result && result.toString) {
+                setIpfsContent(result.toString());
+              }
+              setDownloading(false);
+            }}
+          >
+            Download from IPFS
+          </Button>
+
+          <pre style={{ padding: 16, width: 500, margin: "auto", paddingBottom: 150 }}>{ipfsContent}</pre>
+        </Route>
+        <Route path="/transfers">
+          <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+            <List
+              bordered
+              dataSource={transferEvents}
+              renderItem={item => {
+                return (
+                  <List.Item key={item[0] + "_" + item[1] + "_" + item.blockNumber + "_" + item.args[2].toNumber()}>
+                    <span style={{ fontSize: 16, marginRight: 8 }}>#{item.args[2].toNumber()}</span>
+                    <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> =&gt;
+                    <Address address={item.args[1]} ensProvider={mainnetProvider} fontSize={16} />
+                  </List.Item>
+                );
+              }}
+            />
+          </div>
+        </Route> */}
         <Route path="/mainnetdai">
           <Contract
             name="DAI"
@@ -342,14 +493,6 @@ function App(props) {
             chainId={1}
           />
         </Route>
-        {/* <Route path="/subgraph">
-          <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
-          />
-        </Route> */}
       </Switch>
 
       <ThemeSwitch />
@@ -361,19 +504,15 @@ function App(props) {
             <Ramp price={price} address={address} networks={NETWORKS} />
           </Col>
         </Row>
-
-        <Row align="middle" gutter={[4, 4]}>
+        {/* <Row align="middle" gutter={[4, 4]}>
           <Col span={24}>
-            {
-              /*  if the local provider has a signer, let's show the faucet:  */
-              faucetAvailable ? (
-                <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
-              ) : (
-                ""
-              )
-            }
+            {faucetAvailable ? (
+              <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
+            ) : (
+              ""
+            )}
           </Col>
-        </Row>
+        </Row> */}
       </div>
     </div>
   );

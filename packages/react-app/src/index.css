@@ -12,6 +12,7 @@
 
 .App {
   text-align: center;
+  max-width: 100vw;
 }
 
 body {
@@ -35,9 +36,10 @@ code {
   border-radius: 6px;
   text-shadow: 5px 5px 5px #000000;
   color:#e6d6ca;
-  font-size: 23px;
+  font-size: 17px;
   background: #521212;
   padding: 7px 15px 7px 14px;
+  font-family: 'Milonga-Regular';
   text-decoration: none;
 }
 
@@ -55,6 +57,7 @@ code {
   background: #521212;
   padding: 10px 16px 10px 16px;
   text-decoration: none;
+  font-family: 'Milonga-Regular';
 }
 
 .createBtn:hover {
@@ -63,8 +66,8 @@ code {
 }
 
 .navButton{
-  color: #e6d6ca;
   text-decoration: none;
+  font-family: 'Milonga-Regular';
 }
 
 .navbar {
@@ -145,8 +148,57 @@ code {
   width: 400px;
   height: 400px;
   padding: auto;
-  animation: 3s ease-in 1s reverse both running slidein;
+  animation: 3s ease-in;
  
+}
+
+@media (max-width: 400px) {
+  .flex-grid,
+  .flex-grid-thirds {
+    display: block;
+    
+  }
+}
+@media (max-width: 400px) {
+      .col {
+        width: 100%;
+        margin: 0 0 10px 0;
+      }
+}
+
+input, textarea {
+  background: transparent;
+  border: 1px solid rgba(106, 20, 20, 1);
+}
+
+
+.basic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap:1rem;
+}
+
+.flex-grid { 
+  margin: 0 0 20px 0;
+}
+.item {
+  background-color: rgba(104, 102, 102, 0.3);
+  padding: 7px;
+  border: 1px solid rgba(122, 14, 113, 0.5);
+  border-radius: 5%;
+}
+
+
+.item-image {
+  border-radius: 5%;
+}
+.item-contain {
+  padding: 19px;
+  background-color: rgba(104, 102, 102, 0.3);
+}
+
+.text-col{
+  color: dimgray;
 }
 
 /* .imgContain {

@@ -40,7 +40,7 @@ export default function Address(props) {
   const ensSplit = ens && ens.split(".");
   const validEnsCheck = ensSplit && ensSplit[ensSplit.length - 1] === "eth";
   const etherscanLink = blockExplorerLink(address, props.blockExplorer);
-  let displayAddress = address?.substr(0, 5) + "..." + address?.substr(-4);
+  let displayAddress = address?.substr(0, 4) + "..." + address?.substr(-3);
 
   if (validEnsCheck) {
     displayAddress = ens;
@@ -67,42 +67,54 @@ export default function Address(props) {
           href={etherscanLink}
           rel="noopener noreferrer"
         >
-          <Blockies seed={address.toLowerCase()} size={8} scale={2} />
+          <span style={{ overflow: "hidden", borderRadius: "50%" }}>
+            <Blockies seed={address.toLowerCase()} size={props.blockieSize ? props.blockieSize : 8} scale={2} />
+          </span>
         </a>
       </span>
     );
   }
 
   return (
-    <span>
-      <span className="inline-block" style={{ verticalAlign: "middle" }}>
-        <Blockies seed={address.toLowerCase()} size={8} scale={props.fontSize ? props.fontSize / 7 : 4} />
-      </span>
-      <span style={{ verticalAlign: "middle", paddingLeft: 5, fontSize: props.fontSize ? props.fontSize : 28 }}>
-        {props.onChange ? (
-          <Text editable={{ onChange: props.onChange }} copyable={{ text: address }}>
-            <a
-              style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
-              target="_blank"
-              href={etherscanLink}
-              rel="noopener noreferrer"
-            >
-              {displayAddress}
-            </a>
-          </Text>
-        ) : (
-          <Text copyable={{ text: address }}>
-            <a
-              style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
-              target="_blank"
-              href={etherscanLink}
-              rel="noopener noreferrer"
-            >
-              {displayAddress}
-            </a>
-          </Text>
-        )}
-      </span>
-    </span>
+    <>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <span style={{ overflow: "hidden", borderRadius: "50%" }}>
+          <Blockies
+            seed={address.toLowerCase()}
+            size={props.blockieSize ? props.blockieSize : 8}
+            scale={props.fontSize ? props.fontSize / 7 : 4}
+          />
+        </span>
+        <span style={{ paddingLeft: 5, fontSize: props.fontSize ? props.fontSize : 28 }}>
+          {props.onChange ? (
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Text style={{ display: "flex" }} editable={{ onChange: props.onChange }} copyable={{ text: address }}>
+                <a
+                  style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
+                  target="_blank"
+                  href={etherscanLink}
+                  rel="noopener noreferrer"
+                >
+                  {displayAddress}
+                </a>
+              </Text>
+            </div>
+          ) : (
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Text style={{ display: "flex" }} copyable={{ text: address }}>
+                <a
+                  style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
+                  target="_blank"
+                  href={etherscanLink}
+                  rel="noopener noreferrer"
+                >
+                  {displayAddress}
+                </a>
+              </Text>
+            </div>
+          )}
+        </span>
+      </div>
+    </>
   );
 }
