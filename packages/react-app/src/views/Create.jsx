@@ -20,6 +20,7 @@ const Create = ({ address, writeContracts, tx, ipfs }) => {
     name: "",
     description: "",
     royalty: "",
+    price: "",
     image: "",
   });
 
@@ -49,8 +50,10 @@ const Create = ({ address, writeContracts, tx, ipfs }) => {
       const fileData = new File([blob], "nft.json");
       const ipfsCid = await client.put([fileData]);
 
+      console.log(`n-🔴 => mintItem => Number(nftDetails.royalty) * 10000`, Number(nftDetails.royalty) * 10000);
+
       const result = await tx(
-        yourNFT && yourNFT.mint(`https://ipfs.io/ipfs/${ipfsCid}/nft.json`, nftDetails.royalty * 10000),
+        yourNFT && yourNFT.mint(`https://ipfs.io/ipfs/${ipfsCid}/nft.json`, Number(nftDetails.royalty) * 10000),
         update => {
           console.log("📡 Transaction Update:", update);
           if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -143,16 +146,29 @@ const Create = ({ address, writeContracts, tx, ipfs }) => {
             </div>
 
             <div className="flex flex-col">
-              <label className="text-xl my-1 text-left font-semibold">Royalty</label>
+              <label className="text-xl my-1 text-left font-semibold">Price</label>
               <input
                 type="number"
-                placeholder="100"
+                placeholder="Enter price in eth"
                 className="px-5 py-3 rounded-xl
                outline-none border  bg-transperent"
                 value={nftDetails.price}
+                onChange={e => setNftDetails({ ...nftDetails, price: e.target.value })}
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-xl my-1 text-left font-semibold">Royalty</label>
+              <input
+                type="number"
+                placeholder="Enter royalty amount in eth"
+                className="px-5 py-3 rounded-xl
+               outline-none border  bg-transperent"
+                value={nftDetails.royalty}
                 onChange={e => setNftDetails({ ...nftDetails, royalty: e.target.value })}
               />
             </div>
+
             <button
               type="button"
               onClick={mintItem}

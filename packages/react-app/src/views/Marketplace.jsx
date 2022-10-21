@@ -33,16 +33,18 @@ function NftCard({ address, tokenId, yourNFT, NFTManager, blockExplorer, mainnet
   }, []);
 
   const onTest = async () => {
-    console.log("n-tokenMarketData: ", tokenMarketData);
-
-    //     const approved = await yourNFT.getApproved(tokenId);
-    //     console.log("n-approved: ", approved);
+    console.log("n-tokenMarketData: ", tokenMarketData["price"].toString());
+    const royaltiInfo = await yourNFT.royaltyInfo(tokenId, tokenMarketData["price"]);
+    console.log(`n-🔴 => onTest => royaltiInfo`, ethers.utils.formatEther(royaltiInfo[1].toString()));
   };
 
   const onBuyNFT = async () => {
+    const royaltiInfo = await yourNFT.royaltyInfo(tokenId, tokenMarketData["price"]);
+    let finalPrice = Number(nftInfo["price"]) + Number(ethers.utils.formatEther(royaltiInfo[1].toString()));
     let marketId = tokenMarketData["marketItemId"].toString();
+
     const tx = await NFTManager.createMarketSale(yourNFT.address, marketId, {
-      value: ethers.utils.parseEther("1.05"),
+      value: ethers.utils.parseEther(String(finalPrice)),
     });
     const rcpt = await tx.wait();
     console.log("n-rcpt: ", rcpt);
