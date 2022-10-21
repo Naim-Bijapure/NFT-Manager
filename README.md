@@ -1,4 +1,4 @@
-# NFT - Manager
+## NFT - Manager
 > Royalties for Artists, Builders and Creators! 🚀
 
 
@@ -8,7 +8,7 @@ Great Creator's and Artist's works have gone unnoticed or have sold many times a
 
 You can create Non-Fungible tokens and trade them with NFT-manager smart contract which takes into account the creators royalty and makes sure the creator is properly rewarded for their creations.
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+![image](https://github.com/EngrGord/NFT-Manager/blob/master/packages/react-app/src/assets/Screenshot%202022-10-21%20at%2016-57-05%20Manager.png)
 
 
 # 🏄‍♂️ Quick Start
@@ -42,3 +42,22 @@ yarn start
 cd NFT-Manager
 yarn deploy
 ```
+## Development
+
+Developed with
+
+- [Scaffold-eth](https://github.com/scaffold-eth/scaffold-eth)
+- [Canto Network](https://github.com/the-COH)
+
+
+## Usage
+
+- [Demo App Site](https://)
+- [Video Demo](https://youtu.be/)
+
+## Contributors
+
+- [Naim Bijapure](https://naim-bijapure.github.io/) </br>
+
+- [EngrGord](https://twitter.com/Chijoke_) </br>
+

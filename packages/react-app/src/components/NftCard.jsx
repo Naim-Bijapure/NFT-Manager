@@ -45,7 +45,7 @@ export default function NftCard({ address, tokenId, yourNFT, NFTManager, mainnet
   //   console.log("n-tokenMarketData: ", tokenMarketData);
 
   const addToMarket = async () => {
-    const tx = await NFTManager.createMarketItem(yourNFT.address, tokenId, ethers.utils.parseEther("1"), {
+    const tx = await NFTManager.createMarketItem(yourNFT.address, tokenId, ethers.utils.parseEther(nftInfo["price"]), {
       value: ethers.utils.parseEther("0.05"),
     });
     const rcpt = await tx.wait();
@@ -85,9 +85,11 @@ export default function NftCard({ address, tokenId, yourNFT, NFTManager, mainnet
         </div>
         <div className="">
           <p className="text-lg text-col tracking-widest font-bold">Price</p>
-          <p>{tokenMarketData && ethers.utils.formatEther(tokenMarketData["price"].toString())} ETH</p>
+          {/* <p>{tokenMarketData && ethers.utils.formatEther(tokenMarketData["price"].toString())} ETH</p> */}
+          <p>{nftInfo && nftInfo["price"].toString()} ETH</p>
         </div>
       </div>
+      <div className="">Market listing fee is 0.05 eth</div>
       <div>
         {isAvailableOnMarket ? (
           <>
