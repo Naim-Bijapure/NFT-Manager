@@ -1,4 +1,4 @@
-# NFT - Manager
+## NFT - Manager
 > Royalties for Artists, Builders and Creators! 🚀
 
 
@@ -42,3 +42,22 @@ yarn start
 cd NFT-Manager
 yarn deploy
 ```
+## Development
+
+Developed with
+
+- [Scaffold-eth](https://github.com/scaffold-eth/scaffold-eth)
+- [Canto Network](https://github.com/the-COH)
+
+
+## Usage
+
+- [Demo App Site](https://)
+- [Video Demo](https://youtu.be/)
+
+## Contributors
+
+- [Naim Bijapure](https://naim-bijapure.github.io/) </br>
+
+- [EngrGord](https://twitter.com/Chijoke_) </br>
+
