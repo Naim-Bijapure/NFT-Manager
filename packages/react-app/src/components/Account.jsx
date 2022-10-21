@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import React from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
+import { Link } from "react-router-dom";
 
 import Address from "./Address";
 import Balance from "./Balance";
@@ -64,11 +65,11 @@ export default function Account({
   }
 
   const display = !minimized && (
-    <span className="">
+    <span className="flex flex-row items-center justify-between">
       {address && (
-        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={20} />
+        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={17} />
       )}
-      <Balance address={address} provider={localProvider} price={price} size={20} />
+      <Balance address={address} provider={localProvider} price={price} size={16} />
       {!isContract && (
         <Wallet
           address={address}
@@ -85,12 +86,12 @@ export default function Account({
   );
 
   return (
-    <div style={{ display: "flex" }}>
+    <div className="justify-between space-x-3 items-center flex">
       {display}
       {web3Modal && (
-        <Button style={{ marginLeft: 8 }} shape="round" onClick={accountButtonInfo.action}>
+        <button onClick={accountButtonInfo.action} className="uppercase btn">
           {accountButtonInfo.name}
-        </Button>
+        </button>
       )}
     </div>
   );

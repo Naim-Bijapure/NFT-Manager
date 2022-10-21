@@ -690,7 +690,7 @@ body {
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-variant: tabular-nums;
   line-height: 1.5715;
-  background-color: #212121;
+  background-color: #000000;
   font-feature-settings: "tnum";
 }
 [tabindex="-1"]:focus {
@@ -778,7 +778,7 @@ sup {
   top: -0.5em;
 }
 a {
-  color: #2caad9;
+  color: #edf6f9;
   text-decoration: none;
   background-color: transparent;
   outline: 0;
@@ -787,10 +787,10 @@ a {
   -webkit-text-decoration-skip: objects;
 }
 a:hover {
-  color: #287a99;
+  color: #cd863e;
 }
 a:active {
-  color: #4eb3d2;
+  color: #aeb6b8;
 }
 a:active,
 a:hover {
@@ -855,7 +855,6 @@ optgroup,
 select,
 textarea {
   margin: 0;
-  color: inherit;
   font-size: inherit;
   font-family: inherit;
   line-height: inherit;

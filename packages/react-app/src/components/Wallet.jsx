@@ -1,8 +1,9 @@
-import { KeyOutlined, QrcodeOutlined, SendOutlined, WalletOutlined } from "@ant-design/icons";
+import { KeyOutlined, QrcodeOutlined, SendOutlined } from "@ant-design/icons";
 import { Button, message, Modal, Spin, Tooltip, Typography } from "antd";
 import { ethers } from "ethers";
 import QR from "qrcode.react";
 import React, { useEffect, useState } from "react";
+import { IoMdWallet } from "react-icons/io";
 
 import { Transactor } from "../helpers";
 import Address from "./Address";
@@ -65,7 +66,7 @@ export default function Wallet(props) {
 
   const providerSend = props.provider ? (
     <Tooltip title="Wallet">
-      <WalletOutlined
+      <IoMdWallet
         onClick={() => {
           setOpen(!open);
         }}

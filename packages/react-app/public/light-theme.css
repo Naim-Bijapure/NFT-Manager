@@ -778,7 +778,7 @@ sup {
   top: -0.5em;
 }
 a {
-  color: #1890ff;
+  color: #090909;
   text-decoration: none;
   background-color: transparent;
   outline: 0;
@@ -787,10 +787,10 @@ a {
   -webkit-text-decoration-skip: objects;
 }
 a:hover {
-  color: #40a9ff;
+  color: #414244;
 }
 a:active {
-  color: #096dd9;
+  color: #414345;
 }
 a:active,
 a:hover {
@@ -2488,6 +2488,10 @@ mark {
   background: #096dd9;
   border-color: #096dd9;
 }
+.text-color {
+  color: black;
+}
+
 .ant-btn-ghost > a:only-child,
 .ant-btn-primary:active > a:only-child {
   color: currentColor;
@@ -5680,6 +5684,8 @@ tr > .ant-picker-cell-in-view.ant-picker-cell-range-hover:last-child::after {
   cursor: pointer;
   transition: background 0.3s;
 }
+
+
 .ant-picker-time-panel-column > li.ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner {
   background: #e6f7ff;
 }

@@ -1,6 +1,7 @@
 import { Switch } from "antd";
 import React, { useEffect, useState } from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
+import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md";
 
 export default function ThemeSwitcher() {
   const theme = window.localStorage.getItem("theme");
@@ -17,8 +18,8 @@ export default function ThemeSwitcher() {
   };
 
   return (
-    <div className="main fade-in" style={{ position: "fixed", right: 8, bottom: 8 }}>
-      <span style={{ padding: 8 }}>{currentTheme === "light" ? "☀️" : "🌜"}</span>
+    <div className="main items-center flex fade-in" style={{ position: "fixed", right: 10, bottom: 10 }}>
+      <span style={{ padding: 8 }}>{currentTheme === "dark" ? <MdOutlineDarkMode /> : <MdOutlineLightMode />}</span>
       <Switch checked={isDarkMode} onChange={toggleTheme} />
     </div>
   );
