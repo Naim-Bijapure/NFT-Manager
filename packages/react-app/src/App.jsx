@@ -29,16 +29,6 @@ const projectId = "2DDHiA47zFkJXtnxzl2jFkyuaoq";
 const projectSecret = "96a91eeafc0a390ab66e6a87f61152aa";
 const projectIdAndSecret = `${projectId}:${projectSecret}`;
 
-const { BufferList } = require("bl");
-
-/*
-const ipfs = ipfsAPI({
-  host: "ipfs.nifty.ink",
-  port: "3001",
-  protocol: "https",
-});
-*/
-
 const ipfs = ipfsAPI({
   host: "ipfs.infura.io",
   port: "5001",
@@ -184,21 +174,6 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
   // const purpose = useContractReader(readContracts, "YourContract", "purpose");
-
-  // helper function to "Get" from IPFS
-  // you usually go content.toString() after this...
-  const getFromIPFS = async hashToGet => {
-    for await (const file of ipfs.get(hashToGet)) {
-      console.log(file.path);
-      if (!file.content) continue;
-      const content = new BufferList();
-      for await (const chunk of file.content) {
-        content.append(chunk);
-      }
-      console.log(content);
-      return content;
-    }
-  };
 
   // keep track of a variable from the contract in the local React state:
   const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
@@ -379,6 +354,7 @@ function App(props) {
             tx={tx}
             writeContracts={writeContracts}
             readContracts={readContracts}
+            ipfs={ipfs}
           />
         </Route>
         <Route path="/dashboard">
@@ -388,99 +364,9 @@ function App(props) {
             address={address}
             blockExplorer={blockExplorer}
             tx={tx}
+            ipfs={ipfs}
           />
         </Route>
-        {/* <Route path="/ipfsup">
-          <div style={{ paddingTop: 32, width: 740, margin: "auto", textAlign: "left" }}>
-            <ReactJson
-              style={{ padding: 8 }}
-              src={yourJSON}
-              theme="pop"
-              enableClipboard={false}
-              onEdit={(edit, a) => {
-                setYourJSON(edit.updated_src);
-              }}
-              onAdd={(add, a) => {
-                setYourJSON(add.updated_src);
-              }}
-              onDelete={(del, a) => {
-                setYourJSON(del.updated_src);
-              }}
-            />
-          </div>
-
-          <Button
-            style={{ margin: 8 }}
-            loading={sending}
-            size="large"
-            shape="round"
-            type="primary"
-            onClick={async () => {
-              console.log("UPLOADING...", yourJSON);
-              setSending(true);
-              setIpfsHash();
-              const result = await ipfs.add(JSON.stringify(yourJSON)); // addToIPFS(JSON.stringify(yourJSON))
-              if (result && result.path) {
-                setIpfsHash(result.path);
-              }
-              setSending(false);
-              console.log("RESULT:", result);
-            }}
-          >
-            Upload to IPFS
-          </Button>
-
-          <div style={{ padding: 16, paddingBottom: 150 }}>{ipfsHash}</div>
-        </Route>
-        <Route path="/ipfsdown">
-          <div style={{ paddingTop: 32, width: 740, margin: "auto" }}>
-            <input
-              value={ipfsDownHash}
-              placeHolder="IPFS hash (like QmadqNw8zkdrrwdtPFK1pLi8PPxmkQ4pDJXY8ozHtz6tZq)"
-              onChange={e => {
-                setIpfsDownHash(e.target.value);
-              }}
-            />
-          </div>
-          <Button
-            style={{ margin: 8 }}
-            loading={sending}
-            size="large"
-            shape="round"
-            type="primary"
-            onClick={async () => {
-              console.log("DOWNLOADING...", ipfsDownHash);
-              setDownloading(true);
-              setIpfsContent();
-              const result = await getFromIPFS(ipfsDownHash); // addToIPFS(JSON.stringify(yourJSON))
-              if (result && result.toString) {
-                setIpfsContent(result.toString());
-              }
-              setDownloading(false);
-            }}
-          >
-            Download from IPFS
-          </Button>
-
-          <pre style={{ padding: 16, width: 500, margin: "auto", paddingBottom: 150 }}>{ipfsContent}</pre>
-        </Route>
-        <Route path="/transfers">
-          <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-            <List
-              bordered
-              dataSource={transferEvents}
-              renderItem={item => {
-                return (
-                  <List.Item key={item[0] + "_" + item[1] + "_" + item.blockNumber + "_" + item.args[2].toNumber()}>
-                    <span style={{ fontSize: 16, marginRight: 8 }}>#{item.args[2].toNumber()}</span>
-                    <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> =&gt;
-                    <Address address={item.args[1]} ensProvider={mainnetProvider} fontSize={16} />
-                  </List.Item>
-                );
-              }}
-            />
-          </div>
-        </Route> */}
         <Route path="/mainnetdai">
           <Contract
             name="DAI"

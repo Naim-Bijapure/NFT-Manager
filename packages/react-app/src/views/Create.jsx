@@ -1,74 +1,56 @@
-import React, { useRef, useState } from "react";
+import { Web3Storage } from "web3.storage/dist/bundle.esm.min.js";
+import React, { useState } from "react";
 import { ethers } from "ethers";
-import { useHistory } from "react-router-dom";
-const ipfsAPI = require("ipfs-http-client");
+import { message, Upload } from "antd";
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 
-const projectId = "2DDHiA47zFkJXtnxzl2jFkyuaoq";
-const projectSecret = "96a91eeafc0a390ab66e6a87f61152aa";
-const projectIdAndSecret = `${projectId}:${projectSecret}`;
-
-const { BufferList } = require("bl");
-
-const ipfs = ipfsAPI({
-  host: "ipfs.infura.io",
-  port: "5001",
-  protocol: "https",
-  headers: { authorization: `Basic ${Buffer.from(projectIdAndSecret).toString("base64")}` },
+const client = new Web3Storage({
+  token: process.env.REACT_APP_WEB3_STORAGE_API,
 });
 
-const Create = ({ address, writeContracts, readContracts, tx }) => {
-  const history = useHistory();
-  console.log(address);
+console.log(process.env.REACT_APP_WEB3_STORAGE_API);
+const Create = ({ address, writeContracts, tx, ipfs }) => {
+  const yourNFT = writeContracts["YourNFT"];
+  const NFTmanager = writeContracts["NFTManager"];
 
+  const [file, setFile] = useState("");
+  const [displayImg, setDisplayImg] = useState();
+  const [minting, setMinting] = useState(false);
   const [nftDetails, setNftDetails] = useState({
     name: "",
     description: "",
     royalty: "",
     image: "",
   });
-  const [file, setFile] = useState("");
-  const [transferToAddresses, setTransferToAddresses] = useState({});
-  const [displayImg, setDisplayImg] = useState();
-  const [minting, setMinting] = useState(false);
 
-  const dataRef = useRef();
-
-  function triggerOnChange() {
-    dataRef.current.click();
-  }
-
-  async function handleFileChange(e) {
-    const uploadedFile = e.target.files[0];
-    if (!uploadedFile) return;
-    setNftDetails({ ...nftDetails, image: uploadedFile });
-    let reader = new FileReader();
-    reader.onload = function () {
-      if (reader.result) {
-        setFile(Buffer.from(reader.result));
-      }
-    };
-    reader.readAsArrayBuffer(uploadedFile);
-  }
+  const props = {
+    listType: "picture",
+    async onChange(info) {
+      let nftFile = info.file;
+      message.info("uploading");
+      const file = new File([nftFile], "nft.png", { type: nftFile.type });
+      const ipfsCid = await client.put([file]);
+      console.log("n-ipfsCid: ", ipfsCid);
+      setNftDetails({ ...nftDetails, image: `https://ipfs.io/ipfs/${ipfsCid}/nft.png` });
+      message.success("file uploaded");
+    },
+    beforeUpload: file => {
+      console.log("n-file: ", file);
+      return false;
+    },
+  };
 
   const mintItem = async () => {
     setMinting(true);
     try {
       // upload file to ipfs
-      const fileUpload = await ipfs.add(nftDetails.image);
-      const fileLink = `https://ipfs.io/ipfs/${fileUpload.path}`;
-      setDisplayImg(fileLink);
-      console.log(fileLink);
-      setNftDetails({ ...nftDetails, image: fileLink });
-      console.log(nftDetails);
+      const ipfsData = { ...nftDetails };
+      const blob = new Blob([JSON.stringify(ipfsData)], { type: "application/json" });
+      const fileData = new File([blob], "nft.json");
+      const ipfsCid = await client.put([fileData]);
 
-      // upload metadata to ipfs
-      const uploaded = await ipfs.add(JSON.stringify(nftDetails));
-      console.log("Uploaded Hash: ", uploaded);
-      console.log("Uploaded Hash: ", uploaded.path);
-      const result = tx(
-        writeContracts &&
-          writeContracts.YourNFT &&
-          writeContracts.YourNFT.mint(uploaded.path, nftDetails.royalty * 10000),
+      const result = await tx(
+        yourNFT && yourNFT.mint(`https://ipfs.io/ipfs/${ipfsCid}/nft.json`, nftDetails.royalty * 10000),
         update => {
           console.log("📡 Transaction Update:", update);
           if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -85,7 +67,8 @@ const Create = ({ address, writeContracts, readContracts, tx }) => {
           }
         },
       );
-      await result.wait();
+      const rcpt = await result.wait();
+      console.log("rcpt: ", rcpt);
       setMinting(false);
 
       setNftDetails({
@@ -96,12 +79,25 @@ const Create = ({ address, writeContracts, readContracts, tx }) => {
       });
 
       setFile("");
-      history.push("/dashboard");
+      window.location.href = "/dashboard";
     } catch (error) {
       console.error(error);
       setMinting(false);
     }
   };
+
+  const getBase64 = img => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => reader.result);
+    reader.readAsDataURL(img);
+  };
+
+  const uploadButton = (
+    <div>
+      {minting ? <LoadingOutlined /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
+  );
 
   return (
     <div className="">
@@ -109,20 +105,18 @@ const Create = ({ address, writeContracts, readContracts, tx }) => {
 
       <div className="relative">
         <section className=" w-screen my-20 overflow-hidden mx-0 top-7 items-center space-x-5 flex flex-col lg:flex-row  px-10 justify-evenly relative">
-          <div
-            className="rounded-3xl h-96 border border-solid border-sky-700 w-screen lg:w-2/5 cursor-pointer"
-            onClick={triggerOnChange}
-          >
-            <input id="selectImage" style={{ display: "none" }} type="file" onChange={handleFileChange} ref={dataRef} />
-            {nftDetails.image ? (
-              <div className="h-full flex justify-center items-center">
-                <img src={displayImg} alt="item" className="w-full h-full rounded-3xl p-2" />
-              </div>
-            ) : (
-              <div className="h-full flex justify-center items-center">
-                <h2 className="text-center">Please Select Here to See Your File Preview</h2>
-              </div>
-            )}
+          <div className="rounded-3xl flex h-96 border content-center items-center border-solid border-sky-700 w-screen lg:w-2/5 cursor-pointer">
+            <Upload
+              {...props}
+              name="avatar"
+              style={{ width: "100%" }}
+              listType="picture-card"
+              className="avatar-uploader"
+              showUploadList={false}
+              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            >
+              {nftDetails.image ? <img src={nftDetails.image} alt="avatar" style={{ width: "100%" }} /> : uploadButton}
+            </Upload>
           </div>
 
           <div className="lg:w-2/5 w-screen flex space-y-3 flex-col">

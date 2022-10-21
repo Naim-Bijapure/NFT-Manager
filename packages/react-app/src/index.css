@@ -42,9 +42,25 @@ code {
   font-family: 'Milonga-Regular';
   text-decoration: none;
 }
+.btn-buy {
+  -webkit-border-radius: 6;
+  -moz-border-radius: 6;
+  border-radius: 6px;
+  text-shadow: 5px 5px 5px #000000;
+  color:#e6d6ca;
+  font-size: 17px;
+  background: #107d2c;
+  padding: 7px 15px 7px 14px;
+  font-family: 'Milonga-Regular';
+  text-decoration: none;
+}
 
 .btn:hover {
   background: #f0270c;
+  text-decoration: none;
+}
+.btn-buy:hover {
+  background: #1bf00c;
   text-decoration: none;
 }
 .createBtn {

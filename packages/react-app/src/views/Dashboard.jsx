@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { Address, NftCard } from "../components";
 import { dummy } from "../image";
 
-export default function Dashboard({ writeContracts, mainnetProvider, address, blockExplorer, tx }) {
+export default function Dashboard({ writeContracts, mainnetProvider, address, blockExplorer, tx, ipfs }) {
   const [userTokens, setUserTokens] = useState([]);
 
   const yourNFT = writeContracts["YourNFT"];
@@ -38,11 +38,10 @@ export default function Dashboard({ writeContracts, mainnetProvider, address, bl
       void loadUserNFTs();
     }
   }, [yourNFT]);
-  console.log(NftCard);
 
   return (
     <div style={{ maxWidth: "90%", padding: 20, overflow: "hidden", display: "flex" }}>
-      <div className="space-y-3 w-screen items-center flex flex-col lg:flex-row lg:flex-wrap lg:justify-evenly gap-2 bg-opacity-5">
+      <div className="space-y-3 w-auto items-center flex flex-col lg:flex-row lg:flex-wrap lg:justify-evenly gap-2 bg-opacity-5">
         {userTokens &&
           userTokens.map((tokenId, index) => (
             <div key={index}>
@@ -53,6 +52,7 @@ export default function Dashboard({ writeContracts, mainnetProvider, address, bl
                 NFTManager={NFTmanager}
                 mainnetProvider={mainnetProvider}
                 blockExplorer={blockExplorer}
+                ipfs={ipfs}
               />
             </div>
           ))}

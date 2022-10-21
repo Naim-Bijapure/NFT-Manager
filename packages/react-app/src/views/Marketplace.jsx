@@ -1,51 +1,142 @@
-import React, { useEffect, useState } from "react";
-import { utils } from "ethers";
-import { Address, AddressInput } from "../components";
-import { dummy } from "../image";
+import { useEventListener } from "eth-hooks/events/";
 
-export default function Marketplace(props) {
-  const address = props.address || props.value;
-  console.log(address);
-  const mainnetProvider = props.mainnetProvider;
-  const blockExplorer = props.blockExplorer;
+import { Button, Steps, Modal, Input, Upload, message, Card, Image } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+
+import { ethers } from "ethers";
+import React, { useState } from "react";
+import { useEffect } from "react";
+import { Address } from "../components";
+
+function NftCard({ address, tokenId, yourNFT, NFTManager, blockExplorer, mainnetProvider }) {
+  const [tokenMarketData, setTokenMarketData] = useState();
+  const [nftInfo, setNftInfo] = useState();
+
+  const onLoadTokenMarketDetails = async () => {
+    const marketItemData = await NFTManager.getLatestMarketItemByTokenId(tokenId);
+    //     if (marketItemData[1] && marketItemData[0]["canceled"] === false) {
+    if (marketItemData[1]) {
+      setTokenMarketData(marketItemData[0]);
+    }
+
+    const tokenURI = await yourNFT.tokenURI(tokenId);
+    console.log("n-tokenURI: ", tokenURI);
+
+    let nftData = await fetch(tokenURI);
+    nftData = await nftData.json();
+    console.log("n-nftData: ", nftData);
+    setNftInfo(nftData);
+  };
+
   useEffect(() => {
-    return async () => {
-      const add = await address;
-      console.log(add);
-    };
-  }, [address]);
+    void onLoadTokenMarketDetails();
+  }, []);
+
+  const onTest = async () => {
+    console.log("n-tokenMarketData: ", tokenMarketData);
+
+    //     const approved = await yourNFT.getApproved(tokenId);
+    //     console.log("n-approved: ", approved);
+  };
+
+  const onBuyNFT = async () => {
+    let marketId = tokenMarketData["marketItemId"].toString();
+    const tx = await NFTManager.createMarketSale(yourNFT.address, marketId, {
+      value: ethers.utils.parseEther("1.05"),
+    });
+    const rcpt = await tx.wait();
+    console.log("n-rcpt: ", rcpt);
+    window.location.reload();
+  };
+
   return (
-    <>
-      <div style={{ maxWidth: "90%", padding: 20, overflow: "hidden", display: "flex" }}>
-        <div class="space-y-3 items-center bg-opacity-5">
-          <div class="">
-            <div className="w-80 item-contain rounded-lg">
-              <img className="item" alt="item" src={dummy} />
-              <h3 style={{ fontFamily: "FantaisieArtistique" }} className="font-bold text-left text-xl py-8">
-                Lets Dream
-              </h3>
-              <div className="justify-between p-y-10 flex flex-row">
-                <div className="flex-col">
-                  <p className="text-lg text-left text-col tracking-widest font-bold">Owner</p>
-                  <p>
-                    <Address
-                      address={address}
-                      ensProvider={mainnetProvider}
-                      blockExplorer={blockExplorer}
-                      fontSize={14}
-                    />
-                  </p>
-                </div>
-                <div className="">
-                  <p className="text-lg text-col tracking-widest font-bold">Price</p>
-                  <p>0.5 ETH</p>
-                </div>
-              </div>
-              <button className="btn w-full">Buy</button>
-            </div>
-          </div>
+    <div>
+      <Card size="medium" title={nftInfo?.name} style={{ width: 300 }}>
+        <Image style={{ width: "100%", borderRadius: "5%" }} preview={false} src={nftInfo?.image} />
+        <div className="flex flex-col">
+          <p>{nftInfo?.description}</p>
+          <p className="text-xl">
+            {tokenMarketData && ethers.utils.formatEther(tokenMarketData["price"].toString())} ETH
+          </p>
         </div>
-      </div>
-    </>
+        <div className="flex flex-row justify-between">
+          {/* <div className="text-left">
+            <p>Creator</p>
+            <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={10} />
+          </div> */}
+          {/* <p className="text-sm text-gray-400">
+            <span className="">Royalty:</span>
+            {nftInfo && nftInfo["royalty"]} Eth
+          </p> */}
+        </div>
+        <button className="btn-buy py-3" onClick={onBuyNFT}>
+          Buy
+        </button>
+
+        {/* <Button onClick={onTest}>test</Button> */}
+      </Card>
+    </div>
   );
 }
+
+function MarketPlace({
+  address,
+  readContracts,
+  writeContracts,
+  localProvider,
+  userSigner,
+  blockExplorer,
+  mainnetProvider,
+}) {
+  const yourNFT = writeContracts["YourNFT"];
+  const NFTmanager = writeContracts["NFTManager"];
+
+  const [userTokens, setUserTokens] = useState([]);
+
+  const loadUserNFTs = async () => {
+    let userTokens = [];
+
+    const availableMarketItems = await NFTmanager.fetchAvailableMarketItems();
+    const availableTokenIds = availableMarketItems.map(data => +data["tokenId"].toString());
+    console.log("n-availableTokenIds: ", availableTokenIds);
+
+    if (availableTokenIds.length > 0) {
+      userTokens = [...new Set([...userTokens, ...availableTokenIds])];
+    }
+
+    setUserTokens(userTokens.sort());
+  };
+
+  useEffect(() => {
+    if (yourNFT) {
+      void loadUserNFTs();
+    }
+  }, [yourNFT]);
+
+  //   console.log("n-userTokens: ", userTokens);
+
+  return (
+    <div className="m-2 flex flex-col items-center">
+      {/* your nft list */}
+      <h1 className="text-xl mt-2">Market place NFT's</h1>
+      <div className="flex flex-col lg:flex-row flex-wrap justify-center ">
+        {yourNFT &&
+          NFTmanager &&
+          userTokens.map(tokenId => (
+            <div key={tokenId} className="m-5">
+              <NftCard
+                address={address}
+                tokenId={tokenId}
+                yourNFT={yourNFT}
+                NFTManager={NFTmanager}
+                blockExplorer={blockExplorer}
+                mainnetProvider={mainnetProvider}
+              />
+            </div>
+          ))}
+      </div>
+    </div>
+  );
+}
+
+export default MarketPlace;

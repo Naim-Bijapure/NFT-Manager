@@ -1,10 +1,9 @@
 import { ethers } from "ethers";
 import React, { useState } from "react";
 import { useEffect } from "react";
-import EtherInput from "../components/EtherInput";
 import Address from "./Address";
 
-export default function NftCard({ address, tokenId, yourNFT, NFTManager, mainnetProvider, blockExplorer }) {
+export default function NftCard({ address, tokenId, yourNFT, NFTManager, mainnetProvider, blockExplorer, ipfs }) {
   const [tokenMarketData, setTokenMarketData] = useState();
   const [isAvailableOnMarket, setIsAvailableOnMarket] = useState(false);
   const [approvedAddress, setApprovedAddress] = useState(ethers.constants.AddressZero);
@@ -66,16 +65,8 @@ export default function NftCard({ address, tokenId, yourNFT, NFTManager, mainnet
   const onApprove = async () => {
     const tx = await yourNFT.approve(NFTManager.address, tokenId);
     const rcpt = await tx.wait();
+    console.log(rcpt);
     window.location.reload();
-  };
-
-  const onTest = async () => {
-    //     console.log("n-tokenMarketData: ", ethers.utils.formatEther(tokenMarketData["price"].toString()));
-    console.log("n-tokenMarketData: ", tokenMarketData);
-    //     console.log("n-tokenMarketData:sold ", tokenMarketData["sold"]);
-
-    //     const approved = await yourNFT.getApproved(tokenId);
-    //     console.log("n-approved: ", approved);
   };
 
   return (
@@ -87,9 +78,9 @@ export default function NftCard({ address, tokenId, yourNFT, NFTManager, mainnet
       </h3>
       <div className="justify-between p-y-10 flex flex-row">
         <div className="flex-col">
-          <p className="text-lg text-col tracking-widest font-bold">Creator</p>
+          <p className="text-lg text-col tracking-widest font-bold">Owner</p>
           <p>
-            <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={20} />
+            <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={13} />
           </p>
         </div>
         <div className="">
@@ -97,32 +88,31 @@ export default function NftCard({ address, tokenId, yourNFT, NFTManager, mainnet
           <p>{tokenMarketData && ethers.utils.formatEther(tokenMarketData["price"].toString())} ETH</p>
         </div>
       </div>
-      <button className="btn w-full">Transfer</button>
       <div>
         {isAvailableOnMarket ? (
           <>
             {tokenMarketData["listed"] && tokenMarketData["seller"] === address && (
-              <button type="primary" danger ghost onClick={removeFromMarket}>
+              <button className="btn w-full" onClick={removeFromMarket}>
                 Remove from market
               </button>
             )}
 
             {tokenMarketData["owner"] === address && approvedAddress !== NFTManager.address && (
-              <button type="primary" ghost onClick={onApprove}>
-                Approve NFTManager
+              <button className="btn w-full" onClick={onApprove}>
+                Approve
               </button>
             )}
 
             {tokenMarketData["listed"] === false &&
               tokenMarketData["owner"] === address &&
               approvedAddress === NFTManager.address && (
-                <button type="primary" ghost onClick={addToMarket}>
+                <button className="btn w-full" onClick={addToMarket}>
                   Add to market
                 </button>
               )}
           </>
         ) : (
-          <button type="primary" ghost onClick={addToMarket}>
+          <button className="btn w-full" onClick={addToMarket}>
             Add to market
           </button>
         )}
